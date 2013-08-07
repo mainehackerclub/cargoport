@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="src/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      #logConsole {
+        border:1px solid darkgrey;
+      }
+
+      .old {
+        opacity:0;
+        transition:opacity 1s;
+        -webkit-transition:opacity 1s;
+        -moz-transition:opacity 1s;
+      }
+    </style>
+    <link href="src/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="src/bootstrap/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="src/bootstrap/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="src/bootstrap/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="src/bootstrap/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="src/bootstrap/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="src/bootstrap/ico/favicon.png">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="src/bootstrap/js/jquery.js"></script>
+  <script src="src/handlebars.js"></script>
+  <script>
+    // Socket.io Initialization
+    var socket = io.connect();
+
+    function ledOn(pin,strobe) {
+      socket.emit('thing',{data:"some data",otherData:"other Data"});
+      console.log('thing');
+    };
+
+    socket.on('board',function(data) {
+      console.log(data);
+    });
+
+  </script>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Arduino Dash </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="span2">
+        <h4>Devices</h4>
+      </div>
+      <div class="span2">
+        <h4>Controls</h4>
+      </div>
+      <div class="span5">
+        <h4>Server Log</h4>
+        <div id="logConsole"></div>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="src/bootstrap/js/bootstrap.js"></script>
+  <script>
+    var logSample = {message:"This is a log message."};
+    var max = 5;
+    var log = document.querySelector("#logConsole");
+
+    function logIt(thing) {
+      var text = document.createTextNode(thing);
+      var node = document.createElement("div");
+      node.appendChild(text);
+
+      var toRemove = Array.prototype.slice.call(log.childNodes, max - 1); // make an array of children
+      toRemove.forEach(function (el) {
+        el.className += "old";
+        setTimeout(function () {
+          log.removeChild(el);
+        }, 1000);
+      });
+      log.insertBefore(node, log.firstChild);
+
+      setTimeout(logIt, 1000, "some text - " + Math.random());
+      }
+
+      logIt("start of logging");
+  </script>
+
+  </body>
+</html>
