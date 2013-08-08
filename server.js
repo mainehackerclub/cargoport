@@ -6,12 +6,12 @@ var tcpClients = [];
 
 // Create HTTP server
 var serv = http.createServer(function (req, res) {
-    console.log('HTTP Connection');
+    log('HTTP Connection');
     req.addListener('end', function () {
     // Serve files!
         file.serve(req, res);
     });
-}).listen(1350);
+}).listen(8081, 'awesomesauce.me');
 
 // Initialize Socket.io
 var io = require('socket.io').listen(serv);
@@ -20,30 +20,32 @@ io.set('log level',1);
 //Pass socket.io events to TCP streams.
 io.sockets.on('connection', function(socket) {
   socket.on('ledOn',function(data) {
-    console.log(data);
+    log(data);
     tcpClients[0].write(JSON.stringify(data));
   });
   socket.on('ledOff',function(data) {
     tcpClients[0].write(JSON.stringify(data));
-    console.log(data);
+    log(data);
   });
   socket.on('servo',function(data) {
-    console.log(data);
+    log(data);
     tcpClients[0].write(JSON.stringify(data));
   });
 });
 
 // Pass TCP events to socket.io
-function heartbeat(data) {
-  io.sockets.emit('board',data);
+function log(msg) {
+  console.log(msg);
+  logInfo = {log:msg};
+  io.sockets.emit('log', logInfo);
 }
 
 // Handle TCP client connections.
 var server = net.createServer(function(c) { //'connection' listener
 
-  console.log('TCP client connected');
+  log('TCP client connected');
   c.on('end', function() {
-    console.log('TCP client disconnected');
+    log('TCP client disconnected');
     tcpClients.pop();
   });
 
@@ -53,51 +55,50 @@ var server = net.createServer(function(c) { //'connection' listener
       //Is is a UDK command or a JSON object?
       var udkCommand = data.toString();
       if ( udkCommand == 'LEFT') {
-        console.log('UDK LEFT');
+        log('UDK LEFT');
         tcpClients[0].write("LEFT");
       } else if ( udkCommand == 'LEFTOFF') {
-        console.log('UDK LEFTOFF');
+        log('UDK LEFTOFF');
         tcpClients[0].write("LEFTOFF");
       } else if ( udkCommand == 'RIGHT' ) {
-        console.log('UDK RIGHT');
+        log('UDK RIGHT');
         tcpClients[0].write('RIGHT');
       } else if ( udkCommand == 'RIGHTOFF' ) {
-        console.log('UDK RIGHTOFF');
+        log('UDK RIGHTOFF');
         tcpClients[0].write('RIGHTOFF');
       } else if ( udkCommand == 'UP' ) {
-        console.log('UDK UP');
+        log('UDK UP');
         tcpClients[0].write('UP');
       } else if ( udkCommand == 'DOWN' ) {
-        console.log('UDK DOWN');
+        log('UDK DOWN');
         tcpClients[0].write('DOWN');
       } else if ( udkCommand == 'TRUCK' ) {
-        console.log('UDK TRUCK');
+        log('UDK TRUCK');
         tcpClients[0].write('TRUCK');
       } else if ( udkCommand == 'BOAT' ) {
-        console.log('UDK BOAT');
+        log('UDK BOAT');
         tcpClients[0].write('BOAT');
       } else if ( udkCommand == 'MAGNET' ) {
-        console.log('UDK MAGNET');
+        log('UDK MAGNET');
         tcpClients[0].write('MAGNET');
       } else {
         //Not a UDK command.
         var data = JSON.parse(data.toString());
         if (data == 'undefined') {
-          console.log('Recieved garbage.');
+          log('Recieved garbage.');
         } else {
-          console.log(data);
-          heartbeat(data);
+          log(data);
         }
       }
     } catch (er) {
-      console.log('Cannot parse garbage.');
+      log('Cannot parse garbage.');
     }
   });
 
   //c.pipe(c);
   tcpClients.push(c);
 });
-server.listen(7124, function() {
+server.listen(8124, function() {
   console.log('TCP server bound');
 });
 
