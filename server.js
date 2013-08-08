@@ -19,15 +19,7 @@ io.set('log level',1);
 
 //Pass socket.io events to TCP streams.
 io.sockets.on('connection', function(socket) {
-  socket.on('ledOn',function(data) {
-    log(data);
-    tcpClients[0].write(JSON.stringify(data));
-  });
-  socket.on('ledOff',function(data) {
-    tcpClients[0].write(JSON.stringify(data));
-    log(data);
-  });
-  socket.on('servo',function(data) {
+  socket.on('command',function(data) {
     log(data);
     tcpClients[0].write(JSON.stringify(data));
   });

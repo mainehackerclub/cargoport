@@ -3,9 +3,9 @@ var board  = new five.Board();
 var util = require('util'),
     net = require('net');
 // Global variables for active digital pins.
-var BOOM = 8,
-    HOIST = 11,
-    BOAT = 12,
+var BOOM = 11,
+    HOIST = 10,
+    BOAT = 3,
     TRUCK = 10,
     MAGNET = 9;
 var SERVOS   = [BOOM, HOIST, BOAT, TRUCK];
@@ -171,15 +171,22 @@ board.on("ready", function() {
       } else {
         var data = JSON.parse(data.toString());
         console.log('Received TCP JSON data: '+util.inspect(data));
-        if (data.component == 'servo') {
-          var servo = getServo(data.pin);
-          if (data.pos === 'min') {
-            servo.max();
-          } else if (data.pos === 'max') {
-            servo.min();
-          } else {
-            servo.move(data.pos);
-          }
+        if (data.data== 'LEFT') {
+          console.log('moving to Left.');
+          boom.steps = 3;
+          clearInterval(boomInterval);
+          boomInterval = setInterval(goToZero,boom.pace,boom);
+        } else if (data.data == 'RIGHT') {
+          console.log('moving to Right.');
+          boom.steps = 3;
+          clearInterval(boomInterval);
+          boomInterval = setInterval(goToMax,boom.pace,boom);
+        } else if (data.data == 'UP') {
+          hoist.max();
+          console.log('moving upward.');
+        } else if (data.data == 'DOWN') {
+          hoist.min();
+          console.log('moving downward.');
         }
       }
     } catch (err) {

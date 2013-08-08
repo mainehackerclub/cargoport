@@ -44,9 +44,8 @@
     // Socket.io Initialization
     var socket = io.connect();
 
-    function ledOn(pin,strobe) {
-      socket.emit('thing',{data:"some data",otherData:"other Data"});
-      console.log('thing');
+    function send(command) {
+      socket.emit('command',{data:command});
     };
 
     socket.on('board',function(data) {
@@ -92,6 +91,14 @@
       <div class="span2">
         <h4>Controls</h4>
       </div>
+	<p>
+	  <button type="button" class="btn btn-primary btn-lg" onclick="send('LEFT')">Left</button>
+	  <button type="button" class="btn btn-default btn-lg" onclick="send('RIGHT')">Right</button>
+	</p>
+	<p>
+	  <button type="button" class="btn btn-primary btn-lg" onclick="send('UP')">Up</button>
+	  <button type="button" class="btn btn-default btn-lg" onclick="send('DOWN')">Down</button>
+	</p>
       <div class="span5">
         <h4>Server Log</h4>
         <div id="logConsole"></div>
