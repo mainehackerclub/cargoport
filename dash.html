@@ -44,13 +44,18 @@
     // Socket.io Initialization
     var socket = io.connect();
 
-    function ledOn(pin,strobe) {
-      socket.emit('thing',{data:"some data",otherData:"other Data"});
-      console.log('thing');
+    function send(command) {
+      socket.emit('command',{data:command});
     };
 
     socket.on('board',function(data) {
       console.log(data);
+      logIt(JSON.stringify(data));
+    });
+
+    socket.on('log',function(data) {
+      console.log(data);
+      logIt(JSON.stringify(data));
     });
 
   </script>
@@ -86,6 +91,14 @@
       <div class="span2">
         <h4>Controls</h4>
       </div>
+	<p>
+	  <button type="button" class="btn btn-primary btn-lg" onclick="send('LEFT')">Left</button>
+	  <button type="button" class="btn btn-default btn-lg" onclick="send('RIGHT')">Right</button>
+	</p>
+	<p>
+	  <button type="button" class="btn btn-primary btn-lg" onclick="send('UP')">Up</button>
+	  <button type="button" class="btn btn-default btn-lg" onclick="send('DOWN')">Down</button>
+	</p>
       <div class="span5">
         <h4>Server Log</h4>
         <div id="logConsole"></div>
@@ -99,7 +112,7 @@
     <script src="src/bootstrap/js/bootstrap.js"></script>
   <script>
     var logSample = {message:"This is a log message."};
-    var max = 5;
+    var max = 50;
     var log = document.querySelector("#logConsole");
 
     function logIt(thing) {
@@ -116,7 +129,7 @@
       });
       log.insertBefore(node, log.firstChild);
 
-      setTimeout(logIt, 1000, "some text - " + Math.random());
+      //setTimeout(logIt, 1000, "some text - " + Math.random());
       }
 
       logIt("start of logging");
