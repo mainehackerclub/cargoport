@@ -69,8 +69,13 @@ function udkHeartbeat() {
   udkBeats++;
   var udkClient = getTcpClient("UDK");
   if (udkClient != "") {
-    udkClient.write("HEARTBEAT");
-    log("UDK HEARTBEAT");
+    if (udkBeats % 2 == 1) {
+      udkClient.write("HEARTBEAT");
+      log("UDK HEARTBEAT");
+    } else {
+      udkClient.write("GREAT SUCCESS!!!");
+      log("GREAT SUCCESS!!!");
+    }
   }
 }
 
